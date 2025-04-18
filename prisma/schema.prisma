@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model OriginalPeople {
+  id                  Int               @id @default(autoincrement())
+  name                String
+  description         String
+  estimatedPopulation Int
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @default(now()) @updatedAt
+  regions             Region[]
+  culturalAspects     CulturalAspects[]
+  languages           Language[]
+  terminologies       Terminology[]
+}
+
+model Language {
+  id            Int              @id @default(autoincrement())
+  name          String
+  active        String
+  speakers      Int
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @default(now()) @updatedAt
+  people        OriginalPeople[]
+  terminologies Terminology[]
+}
+
+model Terminology {
+  id         Int              @id @default(autoincrement())
+  term       String
+  definition String
+  context    String
+  languages  Language[]
+  people     OriginalPeople[]
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @default(now()) @updatedAt
+}
+
+model Region {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @default(now()) @updatedAt
+  people      OriginalPeople[]
+}
+
+model CulturalAspects {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @default(now()) @updatedAt
+  people      OriginalPeople[]
+}
