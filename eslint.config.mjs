@@ -35,6 +35,7 @@ export default tseslint.config(
   {
     rules: {
       'prettier/prettier': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
     },
   },
 );

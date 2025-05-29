@@ -4,9 +4,13 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// commands:
+// npx prisma generate (atualiza o prisma db)
+// npx prisma migrate dev --name add_password_to_user (cria um novo histórico do prisma)
+
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,15 +18,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  dateBirth String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
 model OriginalPeople {
-  id                  Int               @id @default(autoincrement())
+  id                  Int              @id @default(autoincrement())
   name                String
   description         String
   estimatedPopulation Int
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @default(now()) @updatedAt
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @default(now()) @updatedAt
   regions             Region[]
-  culturalAspects     CulturalAspects[]
+  culturalAspects     CulturalAspect[]
   languages           Language[]
   terminologies       Terminology[]
 }
@@ -43,10 +63,10 @@ model Terminology {
   term       String
   definition String
   context    String
-  languages  Language[]
-  people     OriginalPeople[]
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @default(now()) @updatedAt
+  languages  Language[]
+  people     OriginalPeople[]
 }
 
 model Region {
@@ -58,7 +78,7 @@ model Region {
   people      OriginalPeople[]
 }
 
-model CulturalAspects {
+model CulturalAspect {
   id          Int              @id @default(autoincrement())
   name        String
   description String
